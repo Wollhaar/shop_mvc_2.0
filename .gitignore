@@ -1,6 +1,14 @@
 #general
 .idea/
 
+#files
+doctrine_scripts/*user.php
+doctrine_scripts/*users.php
+doctrine_scripts/delete_TESTS.php
+
+#doctrine
+db.sqlite
+
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php

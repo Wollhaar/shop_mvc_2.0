@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} | {{ title }}{% endblock %}
+
+{% block body %}
+    <h1>{{ title }}</h1>
+
+    <ul>
+        {% for category in categories %}
+            <i>{{ loop.index }} - {{ category }}</i>
+        {% endfor %}
+    </ul>
+{% endblock %}
