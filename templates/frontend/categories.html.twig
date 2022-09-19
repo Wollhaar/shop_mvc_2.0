@@ -10,4 +10,16 @@
             <a style="display: block" href="{{ path('app_frontend_categories', {categoryId: category.id}) }}">{{ category.name }}</a>
         {% endfor %}
     </ul>
+
+    {% if category %}
+        <h2>{{ category.name }}</h2>
+
+        <div class="product-list">
+            <ul>
+                {% for product in products %}
+                    <a href="{{ path('app_frontend_detailed', {productId: product.id}) }}">{{ product.name }}</a>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
 {% endblock %}

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Model\Entity;
+namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -37,8 +37,7 @@ class Product
     public $color;
 
     /**
-     * @ORM\Column(type="integer")
-     * @var int
+     * @ORM\ManyToOne(targetEntity="Category", inversedBy="products")
      */
     public $category;
 

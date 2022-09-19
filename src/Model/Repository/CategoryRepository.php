@@ -3,28 +3,39 @@ declare(strict_types=1);
 
 namespace App\Model\Repository;
 
-use App\Model\Entity\Category;
-use App\Model\EntityManager\CategoryEntityManager;
-use Doctrine\ORM\EntityManager;
+use App\Entity\Category;
+use App\Model\Dto\CategoryDataTransferObject;
+use App\Model\Mapper\CategoriesMapper;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class CategoryRepository
 {
-    public function __construct(private EntityManagerInterface $entityManager, private CategoryEntityManager $categoryEntityManager)
+    public function __construct(private EntityManagerInterface $entityManager, private CategoriesMapper $catMapper)
     {
-//        $this->entityManager = $entityManager::getManager();
     }
 
-    public function findById(int $id): Category
+    public function findById(int $id): CategoryDataTransferObject
     {
-//        $category = $this->entityManager->find(Category::class, $id);
-        $test = $this->categoryEntityManager->addCategory();
-        dd($test);
+        $category = $this->entityManager->find(Category::class, $id);
+        return $this->catMapper->mapEntityToDto($category);
+    }
+
+    public function findByName(string $name): CategoryDataTransferObject
+    {
+        return $this->catMapper->mapEntityToDto(
+            $this->entityManager->getRepository(Category::class)
+                ->findOneBy(['name' => $name])
+        );
     }
 
     public function getAll(): array
     {
-        return $this->entityManager->getRepository(Category::class)->findAll();
+        $categories = $this->entityManager->getRepository(Category::class)
+            ->findBy(['active' => true]);
+
+        foreach ($categories as $key => $category) {
+            $categories[$key] = $this->catMapper->mapEntityToDto($category);
+        }
+        return $categories;
     }
 }
