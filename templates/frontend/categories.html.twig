@@ -3,7 +3,9 @@
 {% block title %}{{ parent() }} | {{ title }}{% endblock %}
 
 {% block body %}
-    <h1>{{ title }}</h1>
+    {{ parent() }}
+
+    <a href="{{ path('app_frontend_categories') }}"><h2>{{ title }}</h2></a>
 
     <ul>
         {% for category in categories %}

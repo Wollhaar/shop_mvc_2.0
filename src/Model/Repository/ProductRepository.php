@@ -29,8 +29,8 @@ class ProductRepository
 
         $products = $this->entityManager->getRepository(Product::class)
                 ->findBy([
-                    'category', $category->id,
-                    'active', true
+                    'category' => $category->id,
+                    'active' => true
         ]);
 
         foreach ($products as $key => $product) {

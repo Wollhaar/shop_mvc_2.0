@@ -17,7 +17,7 @@ class FrontendController extends AbstractController
         $categories = $catRepo->getAll();
 
         return $this->render('frontend/home.html.twig', [
-            'title' => 'Shop',
+            'title' => 'Home',
             'categories' => $categories
         ]);
     }
@@ -32,7 +32,7 @@ class FrontendController extends AbstractController
         }
 
         return $this->render('frontend/categories.html.twig', [
-            'title' => 'Shop - Kategorien',
+            'title' => 'Kategorien',
             'categories' => $categories,
             'category' => $category ?? null,
             'products' => $products ?? null
