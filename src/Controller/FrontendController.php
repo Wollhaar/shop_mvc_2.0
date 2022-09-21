@@ -8,13 +8,18 @@ use App\Model\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Twig\Environment;
 
 class FrontendController extends AbstractController
 {
-    #[Route('/')]
-    public function home(CategoryRepository $catRepo): Response
+    public function __construct(private Environment $twig, private CategoryRepository $catRepo, private ProductRepository $prodRepo)
     {
-        $categories = $catRepo->getAll();
+    }
+
+    #[Route('/')]
+    public function home(): Response
+    {
+        $categories = $this->catRepo->getAll();
 
         return $this->render('frontend/home.html.twig', [
             'title' => 'Home',
@@ -23,12 +28,12 @@ class FrontendController extends AbstractController
     }
 
     #[Route('/categories/{categoryId}')]
-    public function categories(CategoryRepository $catRepo, ProductRepository $prodRepo, int $categoryId = null): Response
+    public function categories(int $categoryId = null): Response
     {
-        $categories = $catRepo->getAll();
+        $categories = $this->catRepo->getAll();
         if ($categoryId) {
-            $category = $catRepo->findById($categoryId);
-            $products = $prodRepo->findProductsByCategory($category);
+            $category = $this->catRepo->findById($categoryId);
+            $products = $this->prodRepo->findProductsByCategory($category);
         }
 
         return $this->render('frontend/categories.html.twig', [
@@ -40,17 +45,17 @@ class FrontendController extends AbstractController
     }
 
     #[Route('/detail/{productId}')]
-    public function detailed(ProductRepository $prodRepo, CategoryRepository $catRepo, int $productId = null): Response
+    public function detailed(int $productId = null): Response
     {
         if ($productId) {
-            $product = $prodRepo->findById($productId);
-            $category = $catRepo->findByName($product->category);
+            $product = $this->prodRepo->findById($productId);
         }
 
-        return $this->render('frontend/detailed.html.twig', [
+        $retrun = $this->twig->render('frontend/detailed.html.twig', [
             'title' => isset($product) ? $product->name : '404 - Product not found',
-            'category' => $category ?? null,
             'product' => $product ?? null
         ]);
+
+        return new Response($retrun);
     }
 }

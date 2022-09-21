@@ -7,19 +7,22 @@
 
     <h2>{{ title }}</h2>
 
-    <div class="back-link--category">
-        {% if category %}
-            <a style="display: block" href="{{ path('app_frontend_categories', {categoryId: category.id}) }}">{{ category.name }}</a>
-        {% endif %}
-    </div>
+    {% if product %}
+        {% set category = product.category %}
+        <div class="back-link--category">
+            {% if category %}
+                <a style="display: block" href="{{ path('app_frontend_categories', {categoryId: category.id}) }}">{{ category.name }}</a>
+            {% endif %}
+        </div>
 
-    <div class="product-details">
-        <table>
-            <tr><td>Gr&ouml;ße</td><td>{{ product.size }}</td></tr>
-            <tr><td>Farbe</td><td>{{ product.color }}</td></tr>
-            <tr><td>Kategorie</td><td>{{ product.category }}</td></tr>
-            <tr><td>Preis</td><td>{{ product.price }}</td></tr>
-            <tr><td>Vorrat</td><td>{{ product.stock }}</td></tr>
-        </table>
-    </div>
+        <div class="product-details">
+            <table>
+                <tr><td>Gr&ouml;ße</td><td>{{ product.size }}</td></tr>
+                <tr><td>Farbe</td><td>{{ product.color }}</td></tr>
+                <tr><td>Kategorie</td><td>{{ product.category }}</td></tr>
+                <tr><td>Preis</td><td>{{ product.price }}</td></tr>
+                <tr><td>Vorrat</td><td>{{ product.stock }}</td></tr>
+            </table>
+        </div>
+    {% endif %}
 {% endblock %}

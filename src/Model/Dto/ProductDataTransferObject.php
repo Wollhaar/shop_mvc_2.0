@@ -10,7 +10,7 @@ class ProductDataTransferObject
         public readonly string $name,
         public readonly string $size,
         public readonly string $color,
-        public readonly string $category,
+        public readonly CategoryDataTransferObject $category,
         public readonly float $price,
         public readonly int $stock,
         public readonly bool $active,

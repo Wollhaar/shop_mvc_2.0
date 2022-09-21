@@ -25,8 +25,6 @@ class ProductRepository
 
     public function findProductsByCategory(CategoryDataTransferObject $category): array
     {
-        $catEntity = $this->entityManager->find(Category::class, $category->id);
-
         $products = $this->entityManager->getRepository(Product::class)
                 ->findBy([
                     'category' => $category->id,
