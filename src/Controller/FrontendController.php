@@ -12,7 +12,7 @@ use Twig\Environment;
 
 class FrontendController extends AbstractController
 {
-    public function __construct(private Environment $twig, private CategoryRepository $catRepo, private ProductRepository $prodRepo)
+    public function __construct(private CategoryRepository $catRepo, private ProductRepository $prodRepo)
     {
     }
 
@@ -51,11 +51,9 @@ class FrontendController extends AbstractController
             $product = $this->prodRepo->findById($productId);
         }
 
-        $retrun = $this->twig->render('frontend/detailed.html.twig', [
+        return $this->render('frontend/detailed.html.twig', [
             'title' => isset($product) ? $product->name : '404 - Product not found',
             'product' => $product ?? null
         ]);
-
-        return new Response($retrun);
     }
 }

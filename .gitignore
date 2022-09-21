@@ -9,6 +9,9 @@ doctrine_scripts/delete_TESTS.php
 #doctrine
 db.sqlite
 
+#phpunit
+coverage/
+
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
@@ -23,8 +26,3 @@ db.sqlite
 /phpunit.xml
 .phpunit.result.cache
 ###< phpunit/phpunit ###
-
-###> symfony/phpunit-bridge ###
-.phpunit.result.cache
-/phpunit.xml
-###< symfony/phpunit-bridge ###
