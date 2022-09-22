@@ -1,0 +1,16 @@
+{% extends 'backend/backend/board.html.twig' %}
+
+{% block title %}{{ parent() }} | Categories{% endblock %}
+{% block menu %}
+    <ul>
+        {% for category in categories %}
+            <a style="display: block" href="{{ path('app_backend_category_list', {categoryId: category.id}) }}">{{ category.name }}</a>
+        {% endfor %}
+    </ul>
+
+    {% if category %}
+        <div class="category-selection">
+            {{ category.name }}
+        </div>
+    {% endif %}
+{% endblock %}

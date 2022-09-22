@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Backend{% endblock %}
+{% block body %}
+    <h1>BackendBoard</h1>
+
+    <ul class="category-list">
+        <li><a href="{{ path('app_backend_category_list') }}">Kategorieliste</a></li>
+    </ul>
+
+    {% block menu %}{% endblock %}
+{% endblock %}
