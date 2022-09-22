@@ -6,8 +6,7 @@ namespace App\Model\EntityManager;
 class CategoryEntityManager
 {
 
-    public function addCategory(): int
+    public function addCategory()
     {
-        return 22;
     }
 }

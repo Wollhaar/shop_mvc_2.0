@@ -6,7 +6,7 @@
     {{ parent() }}
     <h2>{{ title }}</h2>
 
-    <ul>
+    <ul class="category-list">
         {% for category in categories %}
             <a style="display: block" href="{{ path('app_frontend_categories', {categoryId: category.id}) }}">{{ category.name }}</a>
         {% endfor %}

@@ -6,62 +6,94 @@ namespace AppTest\Controller;
 use App\Controller\FrontendController;
 use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\ProductRepository;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Twig\Environment;
 
-class FrontendControllerTest extends KernelTestCase
+class FrontendControllerTest extends WebTestCase
 {
+    private KernelBrowser $client;
+
     protected function setUp(): void
     {
-        self::bootKernel();
-
-        $this->catRepo = self::getContainer()->get(CategoryRepository::class);
-        $this->prodRepo = self::getContainer()->get(ProductRepository::class);
-//        $this->controller = self::getContainer()->get(FrontendController::class);
-//        $this->twig = self::getContainer()->get(Environment::class);
+        parent::setUp();
+        $this->client = self::createClient();
     }
 
     public function testHome()
     {
-//        $this->controller->home();
-//        $categories = $this->twig->();
-        $categories = $this->catRepo->getAll();
+        $crawler = $this->client->request(
+            'GET',
+            '/'
+        );
+        self::assertResponseStatusCodeSame(200);
+        self::assertSelectorTextContains('h1', 'Shop');
 
-        self::assertCount(5, $categories);
-        self::assertSame('T-Shirt', $categories[0]->name);
-        self::assertSame('Pullover', $categories[1]->name);
-        self::assertSame('Hosen', $categories[2]->name);
-        self::assertSame('Sportswear', $categories[3]->name);
-        self::assertSame('Jacken', $categories[4]->name);
+        $makeList = $crawler->filter('ul.category-list a');
+
+        $tShirtInfo = $makeList->getNode(0);
+        self::assertSame('T-Shirt', $tShirtInfo->nodeValue);
+        self::assertSame('/categories/1', $tShirtInfo->attributes->item(1)->nodeValue);
+
+        $pulloverInfo = $makeList->getNode(1);
+        self::assertSame('Pullover', $pulloverInfo->nodeValue);
+        self::assertSame('/categories/2', $pulloverInfo->attributes->item(1)->nodeValue);
+
+        $hosenInfo = $makeList->getNode(2);
+        self::assertSame('Hosen', $hosenInfo->nodeValue);
+        self::assertSame('/categories/3', $hosenInfo->attributes->item(1)->nodeValue);
+
+        $sportswearInfo = $makeList->getNode(3);
+        self::assertSame('Sportswear', $sportswearInfo->nodeValue);
+        self::assertSame('/categories/4', $sportswearInfo->attributes->item(1)->nodeValue);
+
+        $jackenInfo = $makeList->getNode(4);
+        self::assertSame('Jacken', $jackenInfo->nodeValue);
+        self::assertSame('/categories/5', $jackenInfo->attributes->item(1)->nodeValue);
     }
 
     public function testCategories()
     {
-        $categories = $this->catRepo->getAll();
-        $category = $this->catRepo->findById(2);
-        $products = $this->prodRepo->findProductsByCategory($category);
+        $crawler = $this->client->request(
+            'GET',
+            '/categories/2'
+        );
+        self::assertResponseStatusCodeSame(200);
+        self::assertSelectorTextContains('h3', 'Pullover');
 
-        self::assertCount(5, $categories);
-        self::assertSame(2, $category->id);
-        self::assertSame('Pullover', $category->name);
 
-        self::assertCount(1, $products);
-        self::assertSame('Hoodie - Kapuzenpulli', $products[0]->name);
+        $makeList = $crawler->filter('div.product-list > ul a');
+
+        $pulli = $makeList->getNode(0);
+        self::assertSame('Hoodie - Kapuzenpulli', $pulli->nodeValue);
     }
 
     public function testDetailed()
     {
-        $product = $this->prodRepo->findById(3);
+        $crawler = $this->client->request(
+            'GET',
+            '/detail/2'
+        );
+        self::assertResponseStatusCodeSame(200);
+        self::assertSelectorTextContains('h2', 'HSV - Home-Jersey');
 
-        self::assertSame('Hoodie - Kapuzenpulli', $product->name);
-        self::assertSame('L,XL', $product->size);
-        self::assertSame('braun,grau', $product->color);
 
-        self::assertIsObject($product->category);
-        self::assertSame('Pullover', $product->category->name);
+        $makeList = $crawler->filter('div.product-details > table > tr');
 
-        self::assertSame(30.0, $product->price);
-        self::assertSame(30, $product->stock);
-        self::assertTrue($product->active);
+        $size = $makeList->getNode(0)->childNodes->item(1);
+        self::assertSame('M,L', $size->nodeValue);
+
+        $color = $makeList->getNode(1)->childNodes->item(1);
+        self::assertSame('weiß', $color->nodeValue);
+
+        $categoryName = $makeList->getNode(2)->childNodes->item(1);
+        self::assertSame('Sportswear', $categoryName->nodeValue);
+
+        $price = $makeList->getNode(3)->childNodes->item(1);
+        self::assertSame('80.9', $price->nodeValue);
+
+        $stock = $makeList->getNode(4)->childNodes->item(1);
+        self::assertSame('200', $stock->nodeValue);
     }
 }
