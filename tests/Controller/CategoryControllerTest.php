@@ -51,6 +51,23 @@ class CategoryControllerTest extends WebTestCase
         $makeList = $crawler->filter('.category-selection');
 
         $categoryInfo = $makeList->getNode(0);
-        self::assertSame('T-Shirt', $categoryInfo->nodeValue);
+        self::assertSame('T-Shirt', trim($categoryInfo->nodeValue));
     }
+//
+//    public function testCreate()
+//    {
+//        $crawler = $this->client->request(
+//            'POST',
+//            '/backend/category/create',
+//            ['name' => 'TestCategory']
+//        );
+//        self::assertResponseStatusCodeSame(200);
+//
+//        $creationField = $crawler->filter('.category-creation');
+//
+//        $categoryLabel = $creationField->children('label')->getNode(0);
+//        $categoryName = $creationField->children('p')->getNode(0);
+//        self::assertSame('Created Category', $categoryLabel->nodeValue);
+//        self::assertSame('TestCategory', $categoryName->nodeValue);
+//    }
 }
