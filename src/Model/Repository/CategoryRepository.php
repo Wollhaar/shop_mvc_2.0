@@ -20,6 +20,14 @@ class CategoryRepository
         return $this->catMapper->mapEntityToDto($category);
     }
 
+    public function findByName(string $name): CategoryDataTransferObject
+    {
+        $category = $this->entityManager->getRepository(Category::class)->findOneBy([
+            'name' => $name
+        ]);
+        return $this->catMapper->mapEntityToDto($category);
+    }
+
     public function getAll(): array
     {
         $categories = $this->entityManager->getRepository(Category::class)

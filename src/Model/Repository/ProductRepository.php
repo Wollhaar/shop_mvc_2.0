@@ -37,4 +37,16 @@ class ProductRepository
 
         return $products;
     }
+
+    public function getAll(): array
+    {
+        $products = $this->entityManager->getRepository(Product::class)->findBy([
+            'active' => true
+        ]);
+
+        foreach ($products as $key => $product) {
+            $products[$key] = $this->prodMapper->mapEntityToDto($product);
+        }
+        return $products;
+    }
 }

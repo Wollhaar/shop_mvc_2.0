@@ -2,9 +2,12 @@
 
 {% block title %}{{ parent() }} | Categories{% endblock %}
 {% block menu %}
-    <ul>
+    <ul class="category-list">
         {% for category in categories %}
-            <a style="display: block" href="{{ path('app_backend_category_list', {categoryId: category.id}) }}">{{ category.name }}</a>
+            <li>
+                <a style="color: #0f6674; text-decoration: none" href="{{ path('app_backend_category_list', {categoryId: category.id}) }}">{{ category.name }}</a>
+                <a style="color: red;" href="{{ path('app_backend_category_delete', {categoryId: category.id}) }}">Delete</a>
+            </li>
         {% endfor %}
     </ul>
 
@@ -13,4 +16,8 @@
             {{ category.name }}
         </div>
     {% endif %}
+
+    <div class="category--add-new">
+        <a href="{{ path('app_backend_category_add') }}" class="btn btn-dark category-new">Neue Kategorie</a>
+    </div>
 {% endblock %}

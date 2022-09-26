@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ parent() }} | {{ title }}{% endblock %}
+
+{% block body %}
+    <div class="product-creation">
+        <div class="product-name">
+            <label for="name">Produktname</label>
+            <input type="text" id="name" name="name" placeholder="name" />
+        </div>
+        <div class="product-size">
+            <label for="size">Produktgrößen</label>
+            <input type="text" id="size" name="size" placeholder="size" />
+        </div>
+        <div class="product-color">
+            <label for="color">Produktfarbe</label>
+            <input type="text" id="color" name="color" placeholder="color" />
+        </div>
+        <div class="product-category">
+            <label for="category">Produktkategorie</label>
+            <input type="text" id="category" name="category" placeholder="category" />
+        </div>
+        <div class="product-price">
+            <label for="price">Produktpreis</label>
+            <input type="text" id="price" name="price" placeholder="price" />
+        </div>
+        <div class="product-stock">
+            <label for="stock">Produktvorrat</label>
+            <input type="text" id="stock" name="stock" placeholder="stock" />
+        </div>
+    </div>
+{% endblock %}

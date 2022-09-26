@@ -14,14 +14,14 @@ class ProductsMapper
 
     public function mapToDto(array $product): ProductDataTransferObject
     {
-        $category = $this->catMapper->mapToDto($product['category']);
+        $product = $this->validate($product);
 
         return new ProductDataTransferObject(
             $product['id'],
             $product['name'],
             $product['size'],
             $product['color'],
-            $category,
+            $product['category'],
             $product['price'],
             $product['stock'],
             $product['active'],
@@ -42,5 +42,15 @@ class ProductsMapper
             $product->stock,
             $product->active,
         );
+    }
+
+    private function validate(array $product): array
+    {
+            $product['id'] = (int)$product['id'];
+            $product['price'] = (float)$product['price'];
+            $product['stock'] = (int)$product['stock'];
+            $product['active'] = (bool)$product['active'];
+
+        return $product;
     }
 }

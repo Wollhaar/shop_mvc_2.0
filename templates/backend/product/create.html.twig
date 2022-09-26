@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ parent() }} | {{ title }}{% endblock %}
+
+{% block body %}
+    {% if product %}
+        <div class="product-information">
+            <div class="product-name">
+                <label for="name">Produktname</label>
+                <p>{{ product.name }}</p>
+            </div>
+            <div class="product-size">
+                <label for="size">Produktgrößen</label>
+                <p>{{ product.size }}</p>
+            </div>
+            <div class="product-color">
+                <label for="color">Produktfarbe</label>
+                <p>{{ product.color }}</p>
+            </div>
+            <div class="product-category">
+                <label for="category">Produktkategorie</label>
+                <p>{{ product.category }}</p>
+            </div>
+            <div class="product-price">
+                <label for="price">Produktpreis</label>
+                <p>{{ product.price }}</p>
+            </div>
+            <div class="product-stock">
+                <label for="stock">Produktvorrat</label>
+                <p>{{ product.stock }}</p>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

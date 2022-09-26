@@ -7,6 +7,7 @@ use App\Model\EntityManager\CategoryEntityManager;
 use App\Model\Mapper\CategoriesMapper;
 use App\Model\Repository\CategoryRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -15,9 +16,9 @@ class CategoryController extends AbstractController
     public function __construct(
         private CategoryRepository $categoryRepository,
         private CategoryEntityManager $categoryEntityManager,
-        private CategoriesMapper $categoriesMapper)
-    {
-    }
+        private CategoriesMapper $categoriesMapper
+    )
+    {}
 
     #[Route('/backend/category/list/{categoryId}')]
     public function list(int $categoryId = null): Response
@@ -39,11 +40,11 @@ class CategoryController extends AbstractController
         return $this->render('backend/category/add.html.twig');
     }
 
-    #[Route('/backend/category/create/{category}', methods: ['POST'])]
-    public function create(array $category): Response
+    #[Route('/backend/category/create', methods: ['POST'])]
+    public function create(Request $request): Response
     {
-        $category['id'] = 0;
-        $category['active'] = true;
+        $category = ['id' => 0, 'active' => true];
+        $category['name'] = $request->request->get('name');
 
         $id = $this->categoryEntityManager->addCategory(
             $this->categoriesMapper->mapToDto($category)
@@ -59,7 +60,8 @@ class CategoryController extends AbstractController
         $this->categoryEntityManager->delete($categoryId);
 
         return $this->render('backend/category/list.html.twig', [
-            'categories' => $this->categoryRepository->getAll()
+            'categories' => $this->categoryRepository->getAll(),
+            'category' => null
         ]);
     }
 }
