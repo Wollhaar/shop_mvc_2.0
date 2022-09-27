@@ -97,7 +97,7 @@ class CategoryControllerTest extends WebTestCase
     {
         $crawler = $this->client->request(
             'GET',
-            '/backend/category/delete/44',
+            '/backend/category/delete/5',
         );
         self::assertResponseStatusCodeSame(200);
         self::assertSelectorTextContains('h1', 'BackendBoard');

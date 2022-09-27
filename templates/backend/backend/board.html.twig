@@ -4,10 +4,12 @@
 {% block body %}
     <h1>BackendBoard</h1>
 
-    <ul class="backend-list">
-        <li><a href="{{ path('app_backend_category_list') }}">Kategorieliste</a></li>
-        <li><a href="{{ path('app_backend_product_list') }}">Produktliste</a></li>
-    </ul>
+    {% block backend_list %}
+        <ul class="backend-list">
+            <li><a href="{{ path('app_backend_category_list') }}">Kategorieliste</a></li>
+            <li><a href="{{ path('app_backend_product_list') }}">Produktliste</a></li>
+        </ul>
+    {% endblock %}
 
     {% block menu %}{% endblock %}
 {% endblock %}

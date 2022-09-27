@@ -1,8 +1,12 @@
-{% extends 'base.html.twig' %}
+{% extends 'backend/backend/board.html.twig' %}
 {% block title %}{{ parent() }} | {{ title }}{% endblock %}
 
 {% block body %}
-    <div class="product-creation">
+    {{ parent() }}
+    {% block backend_list %}{% endblock %}
+
+    <h2>Product Creation</h2>
+    <form class="product-creation" action="{{ path('app_backend_product_create') }}" method="post">
         <div class="product-name">
             <label for="name">Produktname</label>
             <input type="text" id="name" name="name" placeholder="name" />
@@ -17,7 +21,11 @@
         </div>
         <div class="product-category">
             <label for="category">Produktkategorie</label>
-            <input type="text" id="category" name="category" placeholder="category" />
+            <select type="text" id="category" name="category">
+                {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.name }}</option>
+                {% endfor %}
+            </select>
         </div>
         <div class="product-price">
             <label for="price">Produktpreis</label>
@@ -27,5 +35,6 @@
             <label for="stock">Produktvorrat</label>
             <input type="text" id="stock" name="stock" placeholder="stock" />
         </div>
-    </div>
+        <button type="submit">Hinzuf&uuml;gen</button>
+    </form>
 {% endblock %}

@@ -44,7 +44,10 @@ class ProductController extends AbstractController
     #[Route('/backend/product/add')]
     public function add(): Response
     {
-        return $this->render('backend/product/add.html.twig', ['title' => 'Product creation']);
+        return $this->render('backend/product/add.html.twig', [
+            'title' => 'Product creation',
+            'categories' => $this->categoryRepository->getAll()
+        ]);
     }
 
     #[Route('/backend/product/create', methods: ['POST'])]
@@ -58,7 +61,7 @@ class ProductController extends AbstractController
         $product['stock'] = $request->request->get('stock');
         $product['price'] = $request->request->get('price');
 
-        $product['category'] = $this->categoryRepository->findByName($product['category']);
+        $product['category'] = $this->categoryRepository->findById((int)$product['category']);
 
         $id = $this->productEntityManager->addProduct(
             $this->productsMapper->mapToDto($product)

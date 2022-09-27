@@ -46,7 +46,7 @@ class ProductControllerTest extends WebTestCase
             '/backend/product/show/1'
         );
         self::assertResponseStatusCodeSame(200);
-        self::assertSelectorTextContains('h1', 'Shop');
+        self::assertSelectorTextContains('h1', 'BackendBoard');
         self::assertSelectorTextContains('h2', 'shirt no.1');
 
 
@@ -65,7 +65,7 @@ class ProductControllerTest extends WebTestCase
         self::assertSame('21.89', $price->childNodes->item(1)->nodeValue);
 
         $stock = $makeList->getNode(4);
-        self::assertSame('200', $stock->childNodes->item(1)->nodeValue);
+        self::assertSame('100', $stock->childNodes->item(1)->nodeValue);
     }
 
     public function testAdd()
@@ -75,7 +75,8 @@ class ProductControllerTest extends WebTestCase
             '/backend/product/add'
         );
         self::assertResponseStatusCodeSame(200);
-//        self::assertSelectorTextContains('h1', 'Shop');
+        self::assertSelectorTextContains('h1', 'BackendBoard');
+        self::assertSelectorTextContains('h2', 'Product Creation');
 
 
         $makeList = $crawler->filter('.product-creation label');
@@ -108,13 +109,14 @@ class ProductControllerTest extends WebTestCase
                 'name' => 'Testprodukt_' . $stamp,
                 'size' => 'M,L,XL',
                 'color' => 'black,white',
-                'category' => 'Hosen',
+                'category' => '3',
                 'price' => 11.31,
                 'stock' => 200,
             ]
         );
         self::assertResponseStatusCodeSame(200);
-        self::assertSelectorTextContains('h1', 'Shop');
+        self::assertSelectorTextContains('h1', 'BackendBoard');
+        self::assertSelectorTextContains('h2', 'Product created');
 
 
         $makeList = $crawler->filter('.product-information p');
@@ -132,9 +134,9 @@ class ProductControllerTest extends WebTestCase
         self::assertSame('Hosen', $categoryName->nodeValue);
 
         $price = $makeList->getNode(4);
-        self::assertSame(11.31, $price->nodeValue);
+        self::assertSame('11.31', $price->nodeValue);
 
         $stock = $makeList->getNode(5);
-        self::assertSame(200, $stock->nodeValue);
+        self::assertSame('200', $stock->nodeValue);
     }
 }

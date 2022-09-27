@@ -23,13 +23,14 @@ class ProductEntityManager
         $productEntity->color = $product->color;
         $productEntity->price = $product->price;
         $productEntity->stock = $product->stock;
+        $productEntity->active = $product->active;
 
         $category = $this->entityManager->find(Category::class, $product->category->id);
         $productEntity->setCategory($category);
 
-        $this->entityManager->persist($product);
+        $this->entityManager->persist($productEntity);
         $this->entityManager->flush();
 
-        return $product->id;
+        return $productEntity->id;
     }
 }
