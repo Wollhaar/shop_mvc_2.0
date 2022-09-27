@@ -2,8 +2,17 @@
 
 {% block body %}
     <a href="{{ path('app_backend_backend_board') }}"><p>Back to board</p></a>
-    <div class="category-creation">
-        <label for="category-name">Created Category</label>
-        <p>{{ category.name }}</p>
-    </div>
+    {% if category %}
+        <div class="category-creation">
+            <label for="category-name">Created Category</label>
+            <p>{{ category.name }}</p>
+        </div>
+    {% else %}
+        <form action="{{ path('app_backend_category_create') }}" method="post">
+            <div class="category-creation">
+                <label for="category-name">CategoryName</label>
+                <input type="text" id="category-name" name="name" placeholder="Name" />
+            </div>
+        </form>
+    {% endif %}
 {% endblock %}

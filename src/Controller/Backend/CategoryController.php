@@ -20,37 +20,29 @@ class CategoryController extends AbstractController
     )
     {}
 
-    #[Route('/backend/category/list/{categoryId}')]
-    public function list(int $categoryId = null): Response
+    #[Route('/backend/category/list')]
+    public function list(): Response
     {
         $categories = $this->categoryRepository->getAll();
-        if ($categoryId) {
-            $category = $this->categoryRepository->findById($categoryId);
-        }
 
         return $this->render('backend/category/list.html.twig', [
             'categories' => $categories,
-            'category' => $category ?? null
         ]);
     }
 
-    #[Route('/backend/category/add')]
-    public function add(): Response
-    {
-        return $this->render('backend/category/add.html.twig');
-    }
-
-    #[Route('/backend/category/create', methods: ['POST'])]
+    #[Route('/backend/category/create')]
     public function create(Request $request): Response
     {
         $category = ['id' => 0, 'active' => true];
         $category['name'] = $request->request->get('name');
 
-        $id = $this->categoryEntityManager->addCategory(
-            $this->categoriesMapper->mapToDto($category)
-        );
+        if (!empty($category['name'])) {
+            $categoryDTO = $this->categoryEntityManager->addCategory(
+                $this->categoriesMapper->mapToDto($category)
+            );
+        }
         return $this->render('backend/category/create.html.twig', [
-            'category' => $this->categoryRepository->findById($id)
+            'category' => $categoryDTO ?? null
         ]);
     }
 

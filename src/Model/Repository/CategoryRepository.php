@@ -14,19 +14,20 @@ class CategoryRepository
     {
     }
 
-    public function findById(int $id): CategoryDataTransferObject
+    public function findById(int $id): CategoryDataTransferObject|null
     {
-        $category = $this->entityManager->find(Category::class, $id);
+        $category = $this->entityManager->getRepository(Category::class)
+            ->findOneBy([
+                'id' => $id,
+                'active' => true
+            ]);
+
+        if (empty($category)){
+            return null;
+        }
+
         return $this->catMapper->mapEntityToDto($category);
     }
-
-//    public function findByName(string $name): CategoryDataTransferObject
-//    {
-//        $category = $this->entityManager->getRepository(Category::class)->findOneBy([
-//            'name' => $name
-//        ]);
-//        return $this->catMapper->mapEntityToDto($category);
-//    }
 
     public function getAll(): array
     {

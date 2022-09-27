@@ -10,11 +10,14 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class CategoryEntityManager
 {
-    public function __construct(private EntityManagerInterface $entityManager)
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+        private CategoriesMapper $categoriesMapper
+    )
     {
     }
 
-    public function addCategory(CategoryDataTransferObject $categoryDTO): int
+    public function addCategory(CategoryDataTransferObject $categoryDTO): CategoryDataTransferObject
     {
         $category = new Category();
         $category->name = $categoryDTO->name;
@@ -23,7 +26,7 @@ class CategoryEntityManager
         $this->entityManager->persist($category);
         $this->entityManager->flush();
 
-        return $category->id;
+        return $this->categoriesMapper->mapEntityToDto($category);
     }
 
     public function delete(int $id): void

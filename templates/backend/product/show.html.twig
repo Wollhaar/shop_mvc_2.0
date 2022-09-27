@@ -12,13 +12,8 @@
             <tr><td>Kategoriename</td><td>{{ product.category.name }}</td></tr>
             <tr><td>Preis</td><td>{{ product.price }}</td></tr>
             <tr><td>Vorrat</td><td>{{ product.stock }}</td></tr>
-            <tr><td>Aktiv</td><td>{% if product.active %}active{% else %}inactive{% endif %}</td></tr>
+            <tr><td>Aktiv</td>
+                <td>{% if product.active %}active{% else %}inactive{% endif %}</td></tr>
         </table>
-        <div class="product-selection">
-        </div>
     {% endif %}
-
-    <div class="category--add-new">
-{#                <a href="{{ path('app_backend_product_add') }}" class="btn btn-dark product-new">Neues Produkt</a>#}
-    </div>
 {% endblock %}

@@ -68,38 +68,6 @@ class ProductControllerTest extends WebTestCase
         self::assertSame('100', $stock->childNodes->item(1)->nodeValue);
     }
 
-    public function testAdd()
-    {
-        $crawler = $this->client->request(
-            'GET',
-            '/backend/product/add'
-        );
-        self::assertResponseStatusCodeSame(200);
-        self::assertSelectorTextContains('h1', 'BackendBoard');
-        self::assertSelectorTextContains('h2', 'Product Creation');
-
-
-        $makeList = $crawler->filter('.product-creation label');
-
-        $name = $makeList->getNode(0);
-        self::assertSame('Produktname', $name->nodeValue);
-
-        $size = $makeList->getNode(1);
-        self::assertSame('Produktgrößen', $size->nodeValue);
-
-        $color = $makeList->getNode(2);
-        self::assertSame('Produktfarbe', $color->nodeValue);
-
-        $categoryName = $makeList->getNode(3);
-        self::assertSame('Produktkategorie', $categoryName->nodeValue);
-
-        $price = $makeList->getNode(4);
-        self::assertSame('Produktpreis', $price->nodeValue);
-
-        $stock = $makeList->getNode(5);
-        self::assertSame('Produktvorrat', $stock->nodeValue);
-    }
-
     public function testCreate()
     {
         $stamp = date('h_i');
@@ -119,24 +87,24 @@ class ProductControllerTest extends WebTestCase
         self::assertSelectorTextContains('h2', 'Product created');
 
 
-        $makeList = $crawler->filter('.product-information p');
+        $makeList = $crawler->filter('.product-information tr');
 
-        $name = $makeList->getNode(0);
+        $name = $makeList->getNode(0)->childNodes->item(1);
         self::assertSame('Testprodukt_' . $stamp, $name->nodeValue);
 
-        $size = $makeList->getNode(1);
+        $size = $makeList->getNode(1)->childNodes->item(1);
         self::assertSame('M,L,XL', $size->nodeValue);
 
-        $color = $makeList->getNode(2);
+        $color = $makeList->getNode(2)->childNodes->item(1);
         self::assertSame('black,white', $color->nodeValue);
 
-        $categoryName = $makeList->getNode(3);
+        $categoryName = $makeList->getNode(3)->childNodes->item(1);
         self::assertSame('Hosen', $categoryName->nodeValue);
 
-        $price = $makeList->getNode(4);
+        $price = $makeList->getNode(4)->childNodes->item(1);
         self::assertSame('11.31', $price->nodeValue);
 
-        $stock = $makeList->getNode(5);
+        $stock = $makeList->getNode(5)->childNodes->item(1);
         self::assertSame('200', $stock->nodeValue);
     }
 }

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Backend;
 
+use App\Model\Dto\ProductDataTransferObject;
 use App\Model\EntityManager\ProductEntityManager;
 use App\Model\Mapper\ProductsMapper;
 use App\Model\Repository\CategoryRepository;
@@ -41,36 +42,35 @@ class ProductController extends AbstractController
         ]);
     }
 
-    #[Route('/backend/product/add')]
-    public function add(): Response
-    {
-        return $this->render('backend/product/add.html.twig', [
-            'title' => 'Product creation',
-            'categories' => $this->categoryRepository->getAll()
-        ]);
-    }
-
-    #[Route('/backend/product/create', methods: ['POST'])]
+    #[Route('/backend/product/create')]
     public function create(Request $request): Response
     {
         $product = ['id' => 0, 'active' => true];
         $product['name'] = $request->request->get('name');
-        $product['size'] = $request->request->get('size');
-        $product['color'] = $request->request->get('color');
-        $product['category'] = $request->request->get('category');
-        $product['stock'] = $request->request->get('stock');
-        $product['price'] = $request->request->get('price');
 
-        $product['category'] = $this->categoryRepository->findById((int)$product['category']);
+        if (!empty($product['name'])) {
+            $product['size'] = $request->request->get('size');
+            $product['color'] = $request->request->get('color');
+            $product['category'] = $request->request->get('category');
+            $product['stock'] = $request->request->get('stock');
+            $product['price'] = $request->request->get('price');
 
-        $id = $this->productEntityManager->addProduct(
-            $this->productsMapper->mapToDto($product)
-        );
-        $product = $this->productRepository->findById($id);
+            $product['category'] = $this->categoryRepository->findById((int)$product['category']);
 
-        return $this->render('backend/product/create.html.twig', [
-            'title' => $product->name,
-            'product' => $product
+            $product = $this->productEntityManager->addProduct(
+                $this->productsMapper->mapToDto($product)
+            );
+
+            if (is_a($product, ProductDataTransferObject::class)) {
+                header('Location: /backend/product/show/' . $product->id);
+                die;
+            }
+            return new Response('ERROR: something went wrong');
+        }
+
+        return $this->render('backend/product/add.html.twig', [
+            'title' => 'Product creation',
+            'categories' => $this->categoryRepository->getAll()
         ]);
     }
 }

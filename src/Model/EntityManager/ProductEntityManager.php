@@ -6,16 +6,18 @@ namespace App\Model\EntityManager;
 use App\Entity\Category;
 use App\Entity\Product;
 use App\Model\Dto\ProductDataTransferObject;
+use App\Model\Mapper\ProductsMapper;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ProductEntityManager
 {
     public function __construct(
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private ProductsMapper $productsMapper
     )
     {}
 
-    public function addProduct(ProductDataTransferObject $product): int
+    public function addProduct(ProductDataTransferObject $product): ProductDataTransferObject
     {
         $productEntity = new Product();
         $productEntity->name = $product->name;
@@ -31,6 +33,6 @@ class ProductEntityManager
         $this->entityManager->persist($productEntity);
         $this->entityManager->flush();
 
-        return $productEntity->id;
+        return $this->productsMapper->mapEntityToDto($productEntity);
     }
 }

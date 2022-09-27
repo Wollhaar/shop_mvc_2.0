@@ -64,10 +64,10 @@ class CategoryControllerTest extends WebTestCase
     {
         $crawler = $this->client->request(
             'GET',
-            '/backend/category/add'
+            '/backend/category/create'
         );
 
-        $nodes = $crawler->filter('div.category-creation label');
+        $nodes = $crawler->filter('form div.category-creation label');
         $categoryInfo = $nodes->getNode(0);
 
         self::assertSame('CategoryName', $categoryInfo->nodeValue);
