@@ -32,6 +32,7 @@ class ProductEntityManagerTest extends KernelTestCase
 
         $connection = $this->entityManager->getConnection();
 
+        $connection->executeUpdate('UPDATE product SET `active` = 1 WHERE id = 8;');
         $connection->executeUpdate('DELETE FROM product WHERE id > 8;');
         $connection->executeUpdate('ALTER TABLE product AUTO_INCREMENT=10;');
     }
@@ -50,10 +51,9 @@ class ProductEntityManagerTest extends KernelTestCase
         ];
 
         $product['category'] = $this->categoryRepository->findById((int)$product['category']);
-        $id = $this->productEntityManager->addProduct(
+        $product = $this->productEntityManager->addProduct(
             $this->productMapper->mapToDto($product)
         );
-        $product = $this->productRepository->findById($id);
 
 
         self::assertSame('TestProdukt_EM_' . date('h_i'), $product->name);
@@ -63,5 +63,13 @@ class ProductEntityManagerTest extends KernelTestCase
         self::assertSame(22.89, $product->price);
         self::assertSame(202, $product->stock);
         self::assertTrue($product->active);
+    }
+
+    public function testDeleteProduct()
+    {
+        $this->productEntityManager->deleteProduct(8);
+        $product = $this->productRepository->findById(8);
+
+        self::assertNull($product);
     }
 }

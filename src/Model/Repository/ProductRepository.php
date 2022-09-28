@@ -9,6 +9,7 @@ use App\Model\Dto\CategoryDataTransferObject;
 use App\Model\Dto\ProductDataTransferObject;
 use App\Model\Mapper\ProductsMapper;
 use Doctrine\ORM\EntityManagerInterface;
+use function PHPUnit\Framework\isNull;
 
 class ProductRepository
 {
@@ -16,11 +17,16 @@ class ProductRepository
     {
     }
 
-    public function findById(int $id): ProductDataTransferObject
+    public function findById(int $id): ProductDataTransferObject|null
     {
-        return $this->prodMapper->mapEntityToDto(
-            $this->entityManager->find(Product::class, $id)
-        );
+        $product = $this->entityManager->getRepository(Product::class)
+            ->findOneBy([
+                'id' => $id,
+                'active' => true
+            ]);
+
+        return is_null($product) ? null :
+            $this->prodMapper->mapEntityToDto($product);
     }
 
     public function findProductsByCategory(CategoryDataTransferObject $category): array
@@ -29,7 +35,7 @@ class ProductRepository
                 ->findBy([
                     'category' => $category->id,
                     'active' => true
-        ]);
+            ]);
 
         foreach ($products as $key => $product) {
             $products[$key] = $this->prodMapper->mapEntityToDto($product);

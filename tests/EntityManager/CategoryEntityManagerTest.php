@@ -38,8 +38,7 @@ class CategoryEntityManagerTest extends KernelTestCase
     public function testAddCategory()
     {
         $category = $this->categoryMapper->mapToDto(['id' => 0, 'name' => 'TEST-Category_' . date('h_i_S'), 'active' => true]);
-        $id = $this->categoryEM->addCategory($category);
-        $category = $this->categoryRepo->findById($id);
+        $category = $this->categoryEM->addCategory($category);
 
         self::assertSame('TEST-Category_' . date('h_i_S'), $category->name);
     }

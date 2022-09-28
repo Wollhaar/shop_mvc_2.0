@@ -35,4 +35,12 @@ class ProductEntityManager
 
         return $this->productsMapper->mapEntityToDto($productEntity);
     }
+
+    public function deleteProduct(int $id): void
+    {
+        $product = $this->entityManager->find(Product::class, $id);
+        $product->active = false;
+
+        $this->entityManager->flush();
+    }
 }

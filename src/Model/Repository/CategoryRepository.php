@@ -22,11 +22,8 @@ class CategoryRepository
                 'active' => true
             ]);
 
-        if (empty($category)){
-            return null;
-        }
-
-        return $this->catMapper->mapEntityToDto($category);
+        return is_null($category) ? null :
+            $this->catMapper->mapEntityToDto($category);
     }
 
     public function getAll(): array

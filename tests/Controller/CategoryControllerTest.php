@@ -26,38 +26,17 @@ class CategoryControllerTest extends WebTestCase
         self::assertSelectorTextContains('h1', 'BackendBoard');
 
         $makeList = $crawler->filter('ul.backend-list a');
+        self::assertCount(2, $makeList);
 
         $categoryInfo = $makeList->getNode(0);
         self::assertSame('Kategorieliste', $categoryInfo->nodeValue);
         self::assertSame('/backend/category/list', $categoryInfo->attributes->item(0)->nodeValue);
 
-        $makeList = $crawler->filter('ul.category-list a');
+        $makeList = $crawler->filter('ul.category-list span');
+        self::assertCount(5, $makeList);
 
         $categoryInfo = $makeList->getNode(0);
         self::assertSame('T-Shirt', $categoryInfo->nodeValue);
-        self::assertSame('/backend/category/list/1', $categoryInfo->attributes->item(1)->nodeValue);
-    }
-
-    public function testOne()
-    {
-        $crawler = $this->client->request(
-            'GET',
-            '/backend/category/list/1'
-        );
-        self::assertResponseStatusCodeSame(200);
-        self::assertSelectorTextContains('h1', 'BackendBoard');
-
-        $makeList = $crawler->filter('ul.backend-list a');
-
-        $categoryInfo = $makeList->getNode(0);
-        self::assertSame('Kategorieliste', $categoryInfo->nodeValue);
-        self::assertSame('/backend/category/list', $categoryInfo->attributes->item(0)->nodeValue);
-
-
-        $makeList = $crawler->filter('.category-selection');
-
-        $categoryInfo = $makeList->getNode(0);
-        self::assertSame('T-Shirt', trim($categoryInfo->nodeValue));
     }
 
     public function testAdd()
@@ -108,7 +87,7 @@ class CategoryControllerTest extends WebTestCase
         self::assertSame('Kategorieliste', $categoryInfo->nodeValue);
         self::assertSame('/backend/category/list', $categoryInfo->attributes->item(0)->nodeValue);
 
-        $categoryList = $crawler->filter('ul.category-list a');
+        $categoryList = $crawler->filter('ul.category-list span');
         $categoryInfo = $categoryList->getNode(0);
         self::assertSame('T-Shirt', $categoryInfo->nodeValue);
     }

@@ -37,7 +37,7 @@ class ProductController extends AbstractController
     {
         $product = $this->productRepository->findById($productId);
         return $this->render('backend/product/show.html.twig', [
-            'title' => $product->name,
+            'title' => $product->name ?? 'ERROR',
             'product' => $product,
         ]);
     }
@@ -45,32 +45,42 @@ class ProductController extends AbstractController
     #[Route('/backend/product/create')]
     public function create(Request $request): Response
     {
-        $product = ['id' => 0, 'active' => true];
-        $product['name'] = $request->request->get('name');
+        if ($request->getMethod() === 'POST') {
+            $product = ['id' => 0, 'active' => true];
 
-        if (!empty($product['name'])) {
+            $product['name'] = $request->request->get('name');
             $product['size'] = $request->request->get('size');
             $product['color'] = $request->request->get('color');
-            $product['category'] = $request->request->get('category');
             $product['stock'] = $request->request->get('stock');
             $product['price'] = $request->request->get('price');
 
-            $product['category'] = $this->categoryRepository->findById((int)$product['category']);
-
-            $product = $this->productEntityManager->addProduct(
-                $this->productsMapper->mapToDto($product)
+            $product['category'] = $this->categoryRepository->findById(
+                (int)$request->request->get('category')
             );
 
+            if (!empty($product['name'])) {
+                $product = $this->productEntityManager->addProduct(
+                    $this->productsMapper->mapToDto($product)
+                );
+            }
             if (is_a($product, ProductDataTransferObject::class)) {
                 header('Location: /backend/product/show/' . $product->id);
-                die;
+                exit;
             }
-            return new Response('ERROR: something went wrong');
+            return new Response('<span class="error-message">ERROR: something went wrong</span>');
         }
 
         return $this->render('backend/product/add.html.twig', [
             'title' => 'Product creation',
             'categories' => $this->categoryRepository->getAll()
         ]);
+    }
+
+    #[Route('/backend/product/delete/{productId}')]
+    public function delete(int $productId): void
+    {
+        $this->productEntityManager->deleteProduct($productId);
+        header('Location: /backend/product/list');
+        exit;
     }
 }

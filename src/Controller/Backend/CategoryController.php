@@ -24,7 +24,6 @@ class CategoryController extends AbstractController
     public function list(): Response
     {
         $categories = $this->categoryRepository->getAll();
-
         return $this->render('backend/category/list.html.twig', [
             'categories' => $categories,
         ]);
@@ -33,10 +32,10 @@ class CategoryController extends AbstractController
     #[Route('/backend/category/create')]
     public function create(Request $request): Response
     {
-        $category = ['id' => 0, 'active' => true];
-        $category['name'] = $request->request->get('name');
+        if ($request->getMethod() === 'POST') {
+            $category = ['id' => 0, 'active' => true];
+            $category['name'] = $request->request->get('name');
 
-        if (!empty($category['name'])) {
             $categoryDTO = $this->categoryEntityManager->addCategory(
                 $this->categoriesMapper->mapToDto($category)
             );

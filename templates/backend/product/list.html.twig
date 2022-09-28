@@ -5,8 +5,8 @@
     <ul class="product-list">
         {% for product in products %}
             <li>
-                <a style="color: #0f6674; text-decoration: none" href="{{ path('app_backend_product_show', {productId: product.id}) }}">{{ product.name }}</a>
-{#                <a style="color: red;" href="{{ path('app_backend_product_delete', {productId: product.id}) }}">Delete</a>#}
+                <a class="link--product-show" style="color: #0f6674; text-decoration: none" href="{{ path('app_backend_product_show', {productId: product.id}) }}">{{ product.name }}</a>
+                <a class="link--product-delete" style="color:red;" href="{{ path('app_backend_product_delete', {productId: product.id}) }}">Delete</a>
             </li>
         {% endfor %}
     </ul>
