@@ -28,12 +28,40 @@ class ProductEntityManager
         $productEntity->active = $product->active;
 
         $category = $this->entityManager->find(Category::class, $product->category->id);
-        $productEntity->setCategory($category);
-
+        if (isset($category) && $category->id) {
+            $productEntity->setCategory($category);
+        }
         $this->entityManager->persist($productEntity);
         $this->entityManager->flush();
 
         return $this->productsMapper->mapEntityToDto($productEntity);
+    }
+
+    public function saveProduct(ProductDataTransferObject $productDTO): ProductDataTransferObject|null
+    {
+        $product = $this->entityManager->getRepository(Product::class)
+            ->findOneBy([
+                'id' => $productDTO->id,
+                'active' => true
+            ]);
+
+        if ($product->id) {
+            $product->size = $productDTO->size;
+            $product->color = $productDTO->color;
+            $product->price = $productDTO->price;
+            $product->stock = $productDTO->stock;
+
+            $category = $this->entityManager->find(Category::class, $product->category->id);
+            if (isset($category) && $category->id) {
+                $product->setCategory($category);
+            }
+
+            $this->entityManager->persist($product);
+            $this->entityManager->flush();
+        }
+
+        return is_null($product) ? null :
+            $this->productsMapper->mapEntityToDto($product);
     }
 
     public function deleteProduct(int $id): void

@@ -1,0 +1,45 @@
+{% extends 'backend/backend/board.html.twig' %}
+
+{% block title %}Edit Product | {{ parent() }}{% endblock %}
+
+{% block menu %}
+    {{ parent() }}
+    <div class="product-edit">
+        {% if product %}
+            <h2>Produkt-Bearbeitung: <span style="color: #0f6674">{{ product.name }}</span></h2>
+            <form action="{{ path('app_backend_product_edit', {productId: product.id, save: 1}) }}" method="post">
+                <input type="hidden" name="id" value="{{ product.id }}">
+                <input type="hidden" name="name" value="{{ product.name }}">
+                <div class="product-size">
+                    <label for="product-size--input">Produktgrößen</label>
+                    <input type="text" id="product-size--input" name="size" value="{{ product.size }}">
+                </div>
+                <div class="product-color">
+                    <label for="product-color--input">Produktfarbe</label>
+                    <input type="text" id="product-color--input" name="color" value="{{ product.color }}">
+                </div>
+                <div class="product-category">
+                    <label for="product-category--input">Produktkategorie</label>
+                    <select type="text" id="product-category--input" name="category">
+                        {% for category in categories %}
+                            <option value="{{ category.id }}"{% if product.category.id == category.id %} selected{% endif %}>
+                                {{ category.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="product-price">
+                    <label for="product-price--input">Produktpreis</label>
+                    <input type="text" id="product-price--input" name="price" value="{{ product.price }}">
+                </div>
+                <div class="product-stock">
+                    <label for="product-stock--input">Produktvorrat</label>
+                    <input type="text" id="product-stock--input" name="stock" value="{{ product.stock }}">
+                </div>
+                <button type="submit">save</button>
+            </form>
+        {% else %}
+            <span style="color: #6f42c1">No product selected</span>
+        {% endif %}
+    </div>
+{% endblock %}

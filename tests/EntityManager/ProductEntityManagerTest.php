@@ -72,4 +72,29 @@ class ProductEntityManagerTest extends KernelTestCase
 
         self::assertNull($product);
     }
+
+    public function testSaveProduct()
+    {
+        $product = [
+            'id' => 10,
+            'name' => '',
+            'size' => 'L,XL',
+            'color' => 'weiss',
+            'category' => '1',
+            'price' => '23.33',
+            'stock' => '200',
+            'active' => '1'
+        ];
+
+        $product['category'] = $this->categoryRepository->findById($product['category']);
+        $product = $this->productEntityManager->saveProduct(
+            $this->productMapper->mapToDto($product)
+        );
+
+        self::assertSame( 'L,XL', $product->size);
+        self::assertSame('weiss', $product->color);
+        self::assertSame( 'T-Shirt', $product->category);
+        self::assertSame('23.33', $product->price);
+        self::assertSame('200', $product->stock);
+    }
 }

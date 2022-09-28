@@ -19,13 +19,18 @@ class ProductController extends AbstractController
         private CategoryRepository $categoryRepository,
         private ProductRepository $productRepository,
         private ProductEntityManager $productEntityManager,
-        private ProductsMapper $productsMapper
+        private ProductsMapper $productsMapper,
     )
     {}
 
     #[Route('/backend/product/list')]
-    public function list(): Response
+    public function list(Request $request): Response
     {
+        if ($request->query->get('delete')) {
+            $this->productEntityManager->deleteProduct(
+                (int)$request->query->get('productId')
+            );
+        }
         $products = $this->productRepository->getAll();
         return $this->render('backend/product/list.html.twig', [
             'products' => $products,
@@ -76,11 +81,31 @@ class ProductController extends AbstractController
         ]);
     }
 
-    #[Route('/backend/product/delete/{productId}')]
-    public function delete(int $productId): void
+    #[Route('/backend/product/edit/{productId}')]
+    public function edit(int $productId, Request $request): Response
     {
-        $this->productEntityManager->deleteProduct($productId);
-        header('Location: /backend/product/list');
-        exit;
+        $product = $this->productRepository->findById($productId);
+
+        if ($request->query->get('save') && $request->getMethod() === 'POST') {
+            $product = [];
+            $product['id'] = $productId;
+            $product['name'] = $request->request->get('name');
+            $product['size'] = $request->request->get('size');
+            $product['color'] = $request->request->get('color');
+            $product['price'] = $request->request->get('price');
+            $product['stock'] = $request->request->get('stock');
+            $product['active'] = $request->request->get('active');
+
+            $product['category'] = $this->categoryRepository->findById(
+                (int)$request->get('category')
+            );
+            $product = $this->productEntityManager->saveProduct(
+                $this->productsMapper->mapToDto($product)
+            );
+        }
+        return $this->render('backend/product/edit.html.twig', [
+            'product' => $product,
+            'categories' => $this->categoryRepository->getAll()
+        ]);
     }
 }

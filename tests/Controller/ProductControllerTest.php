@@ -82,6 +82,46 @@ class ProductControllerTest extends WebTestCase
         self::assertSame('100', $stock->childNodes->item(1)->nodeValue);
     }
 
+    public function testSave()
+    {
+//        $this->request->query->set('save', 1);
+        $crawler = $this->client->request(
+            'POST',
+            '/backend/product/edit/10',
+            [
+                'id' => 10,
+                'name' => '',
+                'size' => 'L,XL',
+                'color' => 'weiss',
+                'category' => '1',
+                'price' => '23.33',
+                'stock' => '200',
+                'active' => '1'
+            ]
+        );
+        self::assertResponseStatusCodeSame(200);
+        self::assertSelectorTextContains('h1', 'BackendBoard');
+        self::assertSelectorTextContains('h2', 'shirt no.1');
+
+
+        $makeList = $crawler->filter('.product-edit form div input');
+
+        $size = $makeList->getNode(0);
+        self::assertSame('L,XL', $size->childNodes->item(1)->nodeValue);
+
+        $color = $makeList->getNode(1);
+        self::assertSame('weiss', $color->childNodes->item(1)->nodeValue);
+
+        $categoryName = $crawler->filter('.product-edit form div select option[selected]')->getNode(0);
+        self::assertSame('T-Shirt', $categoryName->nodeValue);
+
+        $price = $makeList->getNode(2);
+        self::assertSame('23.33', $price->childNodes->item(1)->nodeValue);
+
+        $stock = $makeList->getNode(3);
+        self::assertSame('200', $stock->childNodes->item(1)->nodeValue);
+    }
+
     public function testAdd()
     {
         $crawler = $this->client->request(

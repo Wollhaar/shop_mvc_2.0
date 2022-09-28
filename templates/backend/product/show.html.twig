@@ -6,6 +6,7 @@
 
     {% if product %}
         <h2>{{ product.name }}</h2>
+        <a href="{{ path('app_backend_product_edit', {productId: product.id}) }}">Bearbeiten</a>
         <table class="product-information">
             <tr><td>Gr&ouml;&szlig;e</td><td>{{ product.size }}</td></tr>
             <tr><td>Farbe</td><td>{{ product.color }}</td></tr>
