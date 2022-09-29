@@ -45,7 +45,7 @@ class ProductEntityManager
                 'active' => true
             ]);
 
-        if ($product->id) {
+        if ($product !== null) {
             $product->size = $productDTO->size;
             $product->color = $productDTO->color;
             $product->price = $productDTO->price;
@@ -67,8 +67,10 @@ class ProductEntityManager
     public function deleteProduct(int $id): void
     {
         $product = $this->entityManager->find(Product::class, $id);
-        $product->active = false;
 
-        $this->entityManager->flush();
+        if (isset($product)) {
+            $product->active = false;
+            $this->entityManager->flush();
+        }
     }
 }

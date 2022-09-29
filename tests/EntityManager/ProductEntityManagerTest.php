@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace AppTest\EntityManger;
 
+use App\Model\Dto\ProductDataTransferObject;
 use App\Model\EntityManager\ProductEntityManager;
 use App\Model\Mapper\ProductsMapper;
 use App\Model\Repository\CategoryRepository;
@@ -76,25 +77,30 @@ class ProductEntityManagerTest extends KernelTestCase
     public function testSaveProduct()
     {
         $product = [
-            'id' => 10,
+            'id' => 1,
             'name' => '',
-            'size' => 'L,XL',
-            'color' => 'weiss',
+            'size' => 'M,L',
+            'color' => 'weiss,schwarz',
             'category' => '1',
-            'price' => '23.33',
-            'stock' => '200',
+            'price' => '21.89',
+            'stock' => '100',
             'active' => '1'
         ];
 
-        $product['category'] = $this->categoryRepository->findById($product['category']);
-        $product = $this->productEntityManager->saveProduct(
-            $this->productMapper->mapToDto($product)
-        );
+        $product['category'] = $this->categoryRepository->findById((int)$product['category']);
+        $productDTO = $this->productMapper->mapToDto($product);
 
-        self::assertSame( 'L,XL', $product->size);
-        self::assertSame('weiss', $product->color);
-        self::assertSame( 'T-Shirt', $product->category);
-        self::assertSame('23.33', $product->price);
-        self::assertSame('200', $product->stock);
+        self::assertSame(ProductDataTransferObject::class, $productDTO::class);
+        self::assertSame(1, $productDTO->id);
+
+        $product = $this->productEntityManager->saveProduct($productDTO);
+
+        self::assertSame( 'shirt no.1', $product->name);
+        self::assertSame( 'M,L', $product->size);
+        self::assertSame('weiss,schwarz', $product->color);
+        self::assertSame( 'T-Shirt', $product->category->name);
+        self::assertSame(21.89, $product->price);
+        self::assertSame(100, $product->stock);
+        self::assertTrue($product->active);
     }
 }

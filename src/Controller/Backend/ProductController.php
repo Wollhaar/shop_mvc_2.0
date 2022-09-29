@@ -86,9 +86,12 @@ class ProductController extends AbstractController
     {
         $product = $this->productRepository->findById($productId);
 
-        if ($request->query->get('save') && $request->getMethod() === 'POST') {
+        if ($product !== null &&
+            $request->query->get('save') === '1' &&
+            $request->getMethod() === 'POST')
+        {
             $product = [];
-            $product['id'] = $productId;
+            $product['id'] = $productId ?? $request->request->get('id');
             $product['name'] = $request->request->get('name');
             $product['size'] = $request->request->get('size');
             $product['color'] = $request->request->get('color');

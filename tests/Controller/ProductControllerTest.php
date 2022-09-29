@@ -44,13 +44,19 @@ class ProductControllerTest extends WebTestCase
         self::assertSame('shirt no.1', $productInfo->nodeValue);
         self::assertSame('/backend/product/show/1', $productInfo->attributes->item(2)->nodeValue);
 
+        $makeListEdit = $crawler->filter('ul.product-list li a.link--product-edit');
+        self::assertCount(8, $makeListEdit);
+
+        $productInfo = $makeListEdit->getNode(0);
+        self::assertSame('Bearbeiten', $productInfo->nodeValue);
+        self::assertSame('/backend/product/edit/1', $productInfo->attributes->item(2)->nodeValue);
 
         $makeListDelete = $crawler->filter('ul.product-list li a.link--product-delete');
         self::assertCount(8, $makeListDelete);
 
         $productInfo = $makeListDelete->getNode(0);
         self::assertSame('Delete', $productInfo->nodeValue);
-        self::assertSame('/backend/product/delete/1', $productInfo->attributes->item(2)->nodeValue);
+        self::assertSame('/backend/product/list?productId=1&delete=1', $productInfo->attributes->item(2)->nodeValue);
     }
 
     public function testShow()
@@ -84,18 +90,17 @@ class ProductControllerTest extends WebTestCase
 
     public function testSave()
     {
-//        $this->request->query->set('save', 1);
         $crawler = $this->client->request(
             'POST',
-            '/backend/product/edit/10',
+            '/backend/product/edit/1?save=1',
             [
-                'id' => 10,
+                'id' => 1,
                 'name' => '',
-                'size' => 'L,XL',
-                'color' => 'weiss',
+                'size' => 'M,L',
+                'color' => 'weiss,schwarz',
                 'category' => '1',
-                'price' => '23.33',
-                'stock' => '200',
+                'price' => '21.89',
+                'stock' => '100',
                 'active' => '1'
             ]
         );
@@ -104,22 +109,28 @@ class ProductControllerTest extends WebTestCase
         self::assertSelectorTextContains('h2', 'shirt no.1');
 
 
-        $makeList = $crawler->filter('.product-edit form div input');
+        $makeList = $crawler->filter('.product-edit input');
 
-        $size = $makeList->getNode(0);
-        self::assertSame('L,XL', $size->childNodes->item(1)->nodeValue);
+        $id = $makeList->getNode(0);
+        self::assertSame('1', $id->attributes->item(2)->nodeValue);
 
-        $color = $makeList->getNode(1);
-        self::assertSame('weiss', $color->childNodes->item(1)->nodeValue);
+        $name = $makeList->getNode(1);
+        self::assertSame('shirt no.1', $name->attributes->item(2)->nodeValue);
+
+        $size = $makeList->getNode(2);
+        self::assertSame('M,L', $size->attributes->item(3)->nodeValue);
+
+        $color = $makeList->getNode(3);
+        self::assertSame('weiss,schwarz', $color->attributes->item(3)->nodeValue);
 
         $categoryName = $crawler->filter('.product-edit form div select option[selected]')->getNode(0);
-        self::assertSame('T-Shirt', $categoryName->nodeValue);
+        self::assertSame('T-Shirt', trim($categoryName->nodeValue));
 
-        $price = $makeList->getNode(2);
-        self::assertSame('23.33', $price->childNodes->item(1)->nodeValue);
+        $price = $makeList->getNode(4);
+        self::assertSame('21.89', $price->attributes->item(3)->nodeValue);
 
-        $stock = $makeList->getNode(3);
-        self::assertSame('200', $stock->childNodes->item(1)->nodeValue);
+        $stock = $makeList->getNode(5);
+        self::assertSame('100', $stock->attributes->item(3)->nodeValue);
     }
 
     public function testAdd()
@@ -213,10 +224,42 @@ class ProductControllerTest extends WebTestCase
 
     public function testDelete()
     {
-        $this->client->request(
+        $crawler = $this->client->request(
             'GET',
-            '/backend/product/delete/8'
+            '/backend/product/list?productId=8&delete=1'
         );
-        self::assertResponseStatusCodeSame(500);
+        self::assertResponseStatusCodeSame(200);
+        self::assertSelectorTextContains('h1', 'BackendBoard');
+
+        $makeList = $crawler->filter('ul.backend-list a');
+        self::assertCount(2, $makeList);
+
+        $categoryInfo = $makeList->getNode(0);
+        self::assertSame('Kategorieliste', $categoryInfo->nodeValue);
+        self::assertSame('/backend/category/list', $categoryInfo->attributes->item(0)->nodeValue);
+
+        $productInfo = $makeList->getNode(1);
+        self::assertSame('Produktliste', $productInfo->nodeValue);
+        self::assertSame('/backend/product/list', $productInfo->attributes->item(0)->nodeValue);
+
+
+        $makeListShow = $crawler->filter('ul.product-list li a.link--product-show');
+        self::assertCount(8, $makeListShow);
+
+        $productInfo = $makeListShow->getNode(0);
+        self::assertSame('shirt no.1', $productInfo->nodeValue);
+        self::assertSame('/backend/product/show/1', $productInfo->attributes->item(2)->nodeValue);
+
+
+        $makeListEdit = $crawler->filter('ul.product-list li a.link--product-edit');
+        self::assertCount(8, $makeListEdit);
+
+
+        $makeListDelete = $crawler->filter('ul.product-list li a.link--product-delete');
+        self::assertCount(8, $makeListDelete);
+
+        $productInfo = $makeListDelete->getNode(0);
+        self::assertSame('Delete', $productInfo->nodeValue);
+        self::assertSame('/backend/product/list?productId=1&delete=1', $productInfo->attributes->item(2)->nodeValue);
     }
 }
